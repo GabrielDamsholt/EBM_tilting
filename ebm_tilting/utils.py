@@ -96,6 +96,8 @@ def create_mnist_dataset(bias: bool, train: bool = True) -> Dataset:
     if bias:
         assert train
         _transforms.append(BiasMNIST())
+    else:
+        assert not train
     _transforms.append(NormalizeMNIST())
     transform = transforms.Compose(_transforms)
 

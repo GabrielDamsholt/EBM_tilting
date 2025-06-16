@@ -25,7 +25,9 @@ dependencies = [
 
 [project.scripts]
 train = "ebm_tilting.scripts.train:main"
+train_finetune = "ebm_tilting.scripts.train_finetune:main"
 generate = "ebm_tilting.scripts.sample:main"
+generate_finetune = "ebm_tilting.scripts.sample_finetune:main"
 interpolate = "ebm_tilting.scripts.interpolate:main"
 compute_mnist_mean = "ebm_tilting.scripts.compute_mnist_mean:main"
 

@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, Optional
 
 import torch
 from torch import nn
@@ -11,13 +11,14 @@ OBJECTIVES: Final[list[str]] = ["eta_z", "eta_1"]
 
 
 class Model(nn.Module):
-    def __init__(self, interpolant: Interpolant, objective: str, backbone: nn.Module, clip_eta_1: bool = False) -> None:
+    def __init__(self, interpolant: Interpolant, objective: str, backbone: nn.Module, clip_eta_1: bool = False, baseline: Optional[nn.Module] = None) -> None:
         super().__init__()
         self.interpolant = interpolant
         self.objective = objective
         self.backbone = backbone
         self.clip_eta_1 = clip_eta_1
         self.mnist_mean = load_mnist_mean(next(backbone.parameters()).device)
+        self.baseline = baseline
 
     def _maybe_clip_eta_1(self, eta_1: BatchedImage) -> BatchedImage:
         if self.clip_eta_1:
@@ -27,6 +28,8 @@ class Model(nn.Module):
 
     def forward(self, t: BatchedScalar, x: BatchedImage) -> BatchedImage:
         output = self.backbone(t, x)
+        if self.baseline is not None:
+            output += self.baseline(t, x)
 
         self._cached_t: BatchedScalar = t
         self._cached_x: BatchedImage = x
