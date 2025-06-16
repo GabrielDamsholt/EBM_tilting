@@ -1,0 +1,22 @@
+# dataset
+data/
+
+mnist_mean.pt
+
+# MacOS
+.DS_Store
+
+# cache
+__pycache__/
+
+# distribution / packaging
+*.egg-info/
+*.egg
+
+# virtual environment
+venv/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

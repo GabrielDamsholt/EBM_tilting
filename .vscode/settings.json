@@ -1,0 +1,16 @@
+{
+    "python.terminal.activateEnvironment": true,
+    "ruff.nativeServer": "on",
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+    },
+    "ruff.configuration": "./pyproject.toml",
+    "mypy-type-checker.args": [
+        "--config-file",
+        "./pyproject.toml"
+    ]
+}
