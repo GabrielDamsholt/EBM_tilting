@@ -182,7 +182,7 @@ def train(
                 output = model(t, x_t)
 
                 weight = _get_loss_weight(t, model.interpolant, regressor, objective)
-                ground_truth = z if regressor == "eta_z" else images
+                ground_truth = z if objective == "eta_z" else images
                 loss = torch.mean((weight * (output - ground_truth)) ** 2)
 
                 loss.backward()
