@@ -81,12 +81,22 @@ class NormalizeMNIST(nn.Module):
     def forward(self, image: Image) -> Image:
         return (image - self.mean) / self.std
 
+class BiasMNIST(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.max_val = 0.8
+    
+    def forward(self, image: Image) -> Image:
+        return image.clamp(0.0, self.max_val)
 
-def create_mnist_dataset(train: bool = True) -> Dataset:
+def create_mnist_dataset(bias: bool, train: bool = True) -> Dataset:
     _transforms = [
-        transforms.ToTensor(),
-        NormalizeMNIST(),
+        transforms.ToTensor()
     ]
+    if bias:
+        assert train
+        _transforms.append(BiasMNIST())
+    _transforms.append(NormalizeMNIST())
     transform = transforms.Compose(_transforms)
 
     dataset = datasets.MNIST(

@@ -254,10 +254,10 @@ def main():
     device = torch.device("mps")
 
     # load MNIST dataset
-    mnist = create_mnist_dataset(train=True)
+    mnist = create_mnist_dataset(bias=True, train=True)
 
     # set up dataloader
-    dataloader = DataLoader(mnist, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=4)
+    dataloader = DataLoader(mnist, batch_size=args.batch_size, shuffle=True, pin_memory=False, num_workers=4)
 
     # set up interpolant
     interpolant = string_to_interpolant(args.interpolation)
