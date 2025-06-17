@@ -6,6 +6,8 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
+from torch.utils.data import Subset
+import numpy as np
 
 from ebm_tilting.types import Image
 
@@ -81,31 +83,34 @@ class NormalizeMNIST(nn.Module):
     def forward(self, image: Image) -> Image:
         return (image - self.mean) / self.std
 
-class BiasMNIST(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.max_val = 0.8
-    
-    def forward(self, image: Image) -> Image:
-        return image.clamp(0.0, self.max_val)
+def create_mnist_dataset(fraction_ones: float) -> Dataset:
+    assert fraction_ones >= 0.0
+    assert fraction_ones <= 1.0
 
-def create_mnist_dataset(bias: bool, train: bool = True) -> Dataset:
     _transforms = [
-        transforms.ToTensor()
+        transforms.ToTensor(),
+        NormalizeMNIST(),
     ]
-    if bias:
-        assert train
-        _transforms.append(BiasMNIST())
-    else:
-        assert not train
-    _transforms.append(NormalizeMNIST())
     transform = transforms.Compose(_transforms)
 
-    dataset = datasets.MNIST(
+    mnist_train = datasets.MNIST(
         root="./data",
-        train=train,
+        train=True,
         download=True,
         transform=transform,
     )
 
-    return dataset
+    labels = mnist_train.targets.numpy()
+
+    indices_0 = np.where(labels == 0)[0]
+
+    indices_1_all = np.where(labels == 1)[0]
+    num_1_to_keep = int(len(indices_1_all) * fraction_ones)
+    indices_1_subset = np.random.choice(indices_1_all, num_1_to_keep, replace=False)
+
+    final_indices = np.concatenate([indices_0, indices_1_subset])
+    np.random.shuffle(final_indices)
+
+    subset_train = Subset(mnist_train, final_indices)
+
+    return subset_train

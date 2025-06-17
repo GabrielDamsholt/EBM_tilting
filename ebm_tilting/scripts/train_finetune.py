@@ -155,6 +155,7 @@ def train(
 
     save_path = os.path.join(save_dir, "checkpoint.pt")
 
+    model_baseline.backbone.eval()
     model_finetune.backbone.train()
 
     losses = []
@@ -255,7 +256,7 @@ def main():
     device = torch.device("mps")
 
     # load MNIST dataset
-    mnist = create_mnist_dataset(bias=False, train=False)
+    mnist = create_mnist_dataset(fraction_ones=1.0)
 
     # set up dataloader
     dataloader = DataLoader(mnist, batch_size=args.batch_size, shuffle=True, pin_memory=False, num_workers=4)
@@ -271,6 +272,8 @@ def main():
         base_dim=args.init_features,
         dim_mults=args.dim_mults,
     ).to(device)
+    for param in backbone_baseline.parameters():
+        param.requires_grad = False
 
     model_baseline = Model(interpolant, args.objective, backbone_baseline, clip_eta_1=False)
 

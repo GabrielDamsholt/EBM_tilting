@@ -73,7 +73,7 @@ def main():
     sample_generator.manual_seed(args.seed)
     sample_generator_cpu.manual_seed(args.seed)
 
-    mnist = create_mnist_dataset(bias=True, train=True)
+    mnist = create_mnist_dataset(fraction_ones=0.2)
 
     dataloader = DataLoader(
         mnist,
