@@ -1,21 +1,15 @@
 import torch
 from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
 from tqdm import tqdm
 
-from ebm_tilting.utils import MNIST_MEAN_PATH
+from ebm_tilting.utils import MNIST_MEAN_PATH, create_mnist_dataset
 
 
 def main():
     assert torch.mps.is_available()
     device = "mps"
 
-    mnist = datasets.MNIST(
-        root="./data",
-        train=True,
-        download=True,
-        transform=transforms.ToTensor(),
-    )
+    mnist = create_mnist_dataset(fraction_ones=1.0)
 
     dataloader = DataLoader(
         mnist,

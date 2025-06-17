@@ -254,7 +254,7 @@ def main():
     device = torch.device("mps")
 
     # load MNIST dataset
-    mnist = create_mnist_dataset(bias=True, train=True)
+    mnist = create_mnist_dataset(fraction_ones=0.2)
 
     # set up dataloader
     dataloader = DataLoader(mnist, batch_size=args.batch_size, shuffle=True, pin_memory=False, num_workers=4)
